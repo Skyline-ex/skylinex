@@ -7,4 +7,9 @@ authors = ["blujay"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+object = { version  = "0.29.0", default-features = false, features = ["elf"] }
 thiserror = "1.0.30"
+skyline-macro = { path = "./skyline-macro" }
+once_cell = "1"
+[features]
+static-module = []

@@ -8,7 +8,7 @@ use super::registers::*;
 /// contents are restored from this context, meaning they can be modified.
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct InlineCtx {
+pub struct LegacyInlineCtx {
     /// The 31 general purpose registers on an Aarch64 system (x0-x30)
     pub registers: [CpuRegister; 31]
 }   
@@ -22,7 +22,7 @@ pub struct InlineCtx {
 /// its contents are restored after the callback (with the exception of the stack pointer).
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct ExInlineCtx {
+pub struct InlineCtx {
     /// The 31 general purpose registers on an Aarch64 system (x0-x30)
     pub registers: [CpuRegister; 31],
 
@@ -32,4 +32,25 @@ pub struct ExInlineCtx {
 
     /// The NEON/SIMD registers
     pub fpu_registers: [FpuRegister; 32]
+}
+
+impl InlineCtx {
+    /// Gets a reference to a value on the stack
+    /// # Arguments
+    /// * `offset` - The offset from the stack pointer to get
+    pub fn get_from_stack<T: Sized>(&self, offset: isize) -> &T {
+        unsafe {
+            &*((self.sp.x() as *const u8).offset(offset) as *const T)
+        }
+    }
+
+    /// Gets a mutable reference to a value on the stack
+    /// # Arguments
+    /// * `offset` - The offset from the stack pointer to get
+    /// # Safety
+    /// Values on the stack might be misinterpreted, so this function is marked as unsafe as it
+    /// is entirely possible that modifying a value on the stack will cause crashes
+    pub unsafe fn get_from_stack_mut<T: Sized>(&mut self, offset: isize) -> &mut T {
+        &mut *((self.sp.x() as *mut u8).offset(offset) as *mut T)
+    }
 }

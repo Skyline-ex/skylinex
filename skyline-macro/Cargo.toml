@@ -1,0 +1,15 @@
+[package]
+name = "skyline-macro"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+proc-macro-crate = "1.2.1"
+proc-macro2 = "1.0.43"
+quote = "1.0.21"
+syn = { version = "1.0.100", features = ["full", "extra-traits"] }
+
+[lib]
+proc-macro = true
